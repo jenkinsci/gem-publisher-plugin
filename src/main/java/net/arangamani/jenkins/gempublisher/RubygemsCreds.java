@@ -10,7 +10,7 @@ public class RubygemsCreds {
 
     /**
      *
-     * @param key
+     * @param key The API key to authenticate with Rubygems
      */
     @DataBoundConstructor
     public RubygemsCreds(String key) {

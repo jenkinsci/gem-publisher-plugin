@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -18,6 +19,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author: Kannan Manickam <me@arangamani.net>
  */
 public class RubygemsApi {
+
+    private static final Logger log = Logger
+            .getLogger(RubygemsApi.class.getName());
 
     private final RubygemsCreds creds;
 
@@ -38,9 +42,10 @@ public class RubygemsApi {
      * @throws Exception
      */
     public void postGem(String gemFile) throws Exception {
-        System.out.println("Posting gem... " + gemFile);
+        String postURL = "https://rubygems.org/api/v1/gems";
         byte[] fileContents = read(gemFile);
-        sendPost("https://rubygems.org/api/v1/gems", creds.getKey(), fileContents);
+        log.info("Posting gem file " + gemFile + " to " + postURL);
+        doPost(postURL, creds.getKey(), fileContents);
     }
 
     /**
@@ -50,7 +55,7 @@ public class RubygemsApi {
      * @param body
      * @throws Exception
      */
-    private void sendPost(String url, String key, byte[] body) throws Exception {
+    private void doPost(String url, String key, byte[] body) throws Exception {
 
         URL obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
@@ -66,7 +71,7 @@ public class RubygemsApi {
         os.close();
 
         int responseCode = con.getResponseCode();
-        System.out.println("Response code for the POST request: " + responseCode);
+        log.info("Response code for the POST request: " + responseCode);
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
@@ -79,7 +84,7 @@ public class RubygemsApi {
         in.close();
 
         // Print Result
-        System.out.println(response.toString());
+        log.info("Response from rubygems.org for POST: " + response.toString());
 
     }
 
@@ -111,10 +116,10 @@ public class RubygemsApi {
             }
         }
         catch (FileNotFoundException ex) {
-            System.out.println("File not found.");
+            log.severe("File not found: " + aInputFileName);
         }
         catch (IOException ex) {
-            System.out.println(ex);
+            log.severe("Can't read gem file: " + ex.getMessage());
         }
         return result;
     }
