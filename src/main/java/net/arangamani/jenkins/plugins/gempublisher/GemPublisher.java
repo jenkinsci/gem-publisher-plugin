@@ -1,35 +1,32 @@
 package net.arangamani.jenkins.plugins.gempublisher;
 import hudson.Extension;
-import hudson.FilePath;
+//import hudson.FilePath;
 import hudson.Launcher;
-import hudson.Util;
+//import hudson.Util;
 import hudson.model.*;
+import hudson.CopyOnWrite;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
-import hudson.util.CopyOnWriteList;
-import hudson.util.FormValidation;
-import org.apache.commons.lang.StringUtils;
+//import hudson.util.CopyOnWriteList;
+//import hudson.util.FormValidation;
+//import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+//import org.kohsuke.stapler.StaplerResponse;
 
-import javax.servlet.ServletException;
+//import javax.servlet.ServletException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+//import java.io.PrintStream;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Map;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kannanmanickam
- * Date: 7/14/13
- * Time: 6:10 PM
- * To change this template use File | Settings | File Templates.
+ * @author Kannan Manickam <me@arangamani.net>
  */
 public final class GemPublisher extends Recorder implements Describable<Publisher> {
 
@@ -51,7 +48,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            BuildListener listener)
             throws InterruptedException, IOException {
         //log(listener.getLogger(), "Testing Gem publisher");
-        log.info("Kannan is testing: " + getGemLocation());
+        log.info("Kannan is testing: " + getGemLocation() + " >>>> " + DESCRIPTOR.getRubygemsCreds().getKey());
         return true;
     }
 
@@ -69,6 +66,9 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
     }
 
     public static final class GemDescriptor extends BuildStepDescriptor<Publisher> {
+
+        @CopyOnWrite
+        private volatile RubygemsCreds gemcreds;
 
         public GemDescriptor(Class<? extends Publisher> clazz) {
             super(clazz);
@@ -96,8 +96,13 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
 
         @Override
         public boolean configure(StaplerRequest req, net.sf.json.JSONObject json) throws FormException {
+            gemcreds = req.bindParameters(RubygemsCreds.class, "gemcreds.");
             save();
             return true;
+        }
+
+        public RubygemsCreds getRubygemsCreds() {
+            return gemcreds;
         }
 
         @Override

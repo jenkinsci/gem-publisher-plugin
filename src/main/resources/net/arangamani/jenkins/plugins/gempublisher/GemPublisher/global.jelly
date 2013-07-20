@@ -12,13 +12,8 @@
     so it should be straightforward to find them.
   -->
     <f:section title="Gem Publisher">
-        <f:entry title="Rubygems Username" field="rubygemsUserName"
-                 description="Username to publish gems to rubygems.org">
-            <f:textbox />
-        </f:entry>
-        <f:entry title="Rubygems Password" field="rubygemsPassword"
-                 description="Password to publish gems to rubygems.org">
-            <f:password />
+        <f:entry title="Rubygems API Key">
+            <f:password name="gemcreds.key" value="${instance.gemcreds.key}"/>
         </f:entry>
     </f:section>
 </j:jelly>
