@@ -1,4 +1,4 @@
-package net.arangamani.jenkins.plugins.gempublisher;
+package net.arangamani.jenkins.gempublisher;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.*;

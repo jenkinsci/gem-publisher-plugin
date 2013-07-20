@@ -1,4 +1,4 @@
-package net.arangamani.jenkins.plugins.gempublisher;
+package net.arangamani.jenkins.gempublisher;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 

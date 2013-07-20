@@ -1,4 +1,4 @@
-package net.arangamani.jenkins.plugins.gempublisher;
+package net.arangamani.jenkins.gempublisher;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.OutputStream;
