@@ -39,7 +39,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            Launcher launcher,
                            BuildListener listener)
             throws InterruptedException, IOException {
-        api = new RubygemsApi(DESCRIPTOR.getRubygemsCreds());
+        api = new RubygemsApi(DESCRIPTOR.getCreds());
         try {
             StringBuilder builder = new StringBuilder();
             String gemPath;
@@ -72,7 +72,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
     public static final class GemDescriptor extends BuildStepDescriptor<Publisher> {
 
         @CopyOnWrite
-        private volatile RubygemsCreds gemcreds;
+        private volatile RubygemsCreds creds;
 
         public GemDescriptor(Class<? extends Publisher> clazz) {
             super(clazz);
@@ -100,13 +100,13 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
 
         @Override
         public boolean configure(StaplerRequest req, net.sf.json.JSONObject json) throws FormException {
-            gemcreds = req.bindParameters(RubygemsCreds.class, "gemcreds.");
+            creds = req.bindParameters(RubygemsCreds.class, "creds.");
             save();
             return true;
         }
 
-        public RubygemsCreds getRubygemsCreds() {
-            return gemcreds;
+        public RubygemsCreds getCreds() {
+            return creds;
         }
 
         @Override
