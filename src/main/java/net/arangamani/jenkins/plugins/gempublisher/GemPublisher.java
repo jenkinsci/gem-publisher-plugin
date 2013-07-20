@@ -37,6 +37,8 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
     @Extension
     public static final GemDescriptor DESCRIPTOR = new GemDescriptor();
 
+    public RubygemsApi api;
+
     @DataBoundConstructor
     public GemPublisher(String gemLocation) {
         this.gemLocation = gemLocation;
@@ -48,7 +50,15 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            BuildListener listener)
             throws InterruptedException, IOException {
         //log(listener.getLogger(), "Testing Gem publisher");
+        api = new RubygemsApi(DESCRIPTOR.getRubygemsCreds());
+        try {
+            api.postGem();
+        }
+        catch(Exception e){
+            log.warning(e.getMessage());
+        }
         log.info("Kannan is testing: " + getGemLocation() + " >>>> " + DESCRIPTOR.getRubygemsCreds().getKey());
+        log.info("Build Root: " + build.getModuleRoot());
         return true;
     }
 
