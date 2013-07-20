@@ -22,39 +22,35 @@ public class RubygemsApi {
     private final RubygemsCreds creds;
 
     private final String USER_AGENT = "JenkinsGemPlugin/1.0";
-    private final String FILE_NAME = "/Users/kannanmanickam/Projects/self/jenkins_plugins/gem-publisher/work/workspace/test/test_rubygem-0.0.4.gem";
 
     @DataBoundConstructor
     public RubygemsApi(RubygemsCreds creds) {
         this.creds = creds;
     }
 
-    public void testMethod() throws Exception{
-        sendPostExample();
+    public void postGem(String gemFile) throws Exception {
+        System.out.println("Posting gem... " + gemFile);
+        byte[] fileContents = read(gemFile);
+        sendPost("https://rubygems.org/api/v1/gems", creds.getKey(), fileContents);
     }
 
-    public void postGem() throws Exception {
-        System.out.println("Posting gem... " + FILE_NAME);
-        sendPost("https://rubygems.org/api/v1/gems", creds.getKey());
-    }
-
-    private void sendPost(String url, String key) throws Exception {
+    private void sendPost(String url, String key, byte[] body) throws Exception {
 
         URL obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", USER_AGENT);
         con.setRequestProperty("Authorization", key);
+        con.setRequestProperty("Content-Type", "application/octet-stream");
+        con.setRequestProperty("Content-Length", Integer.toString(body.length));
 
         con.setDoOutput(true);
         OutputStream os = con.getOutputStream();
-
-        byte[] fileContents = read(FILE_NAME);
-
-        os.write(fileContents);
+        os.write(body);
         os.close();
 
         int responseCode = con.getResponseCode();
+        System.out.println("Response code for the POST request: " + responseCode);
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
@@ -87,11 +83,6 @@ public class RubygemsApi {
                         totalBytesRead = totalBytesRead + bytesRead;
                     }
                 }
-        /*
-         the above style is a bit tricky: it places bytes into the 'result' array;
-         'result' is an output parameter;
-         the while loop usually has a single iteration only.
-        */
             }
             finally {
                 input.close();
@@ -104,5 +95,5 @@ public class RubygemsApi {
             System.out.println(ex);
         }
         return result;
-    }git
+    }
 }

@@ -1,28 +1,18 @@
 package net.arangamani.jenkins.plugins.gempublisher;
 import hudson.Extension;
-//import hudson.FilePath;
 import hudson.Launcher;
-//import hudson.Util;
 import hudson.model.*;
 import hudson.CopyOnWrite;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
-//import hudson.util.CopyOnWriteList;
 //import hudson.util.FormValidation;
-//import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
-//import org.kohsuke.stapler.StaplerResponse;
 
-//import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
-//import java.io.PrintStream;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +22,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
 
     private static final Logger log = Logger
             .getLogger(GemPublisher.class.getName());
-    public final String gemLocation;
+    public final String gemName;
 
     @Extension
     public static final GemDescriptor DESCRIPTOR = new GemDescriptor();
@@ -40,8 +30,8 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
     public RubygemsApi api;
 
     @DataBoundConstructor
-    public GemPublisher(String gemLocation) {
-        this.gemLocation = gemLocation;
+    public GemPublisher(String gemName) {
+        this.gemName = gemName;
     }
 
     @Override
@@ -49,16 +39,20 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            Launcher launcher,
                            BuildListener listener)
             throws InterruptedException, IOException {
-        //log(listener.getLogger(), "Testing Gem publisher");
         api = new RubygemsApi(DESCRIPTOR.getRubygemsCreds());
         try {
-            api.postGem();
+            StringBuilder builder = new StringBuilder();
+            String gemPath;
+            gemPath = builder.append(build.getModuleRoot()).append(File.separator)
+                    .append(gemName).toString();
+            log.info("Pushing gem " + gemName + " to rubygems.org");
+            api.postGem(gemPath);
         }
         catch(Exception e){
             log.warning(e.getMessage());
+            e.printStackTrace(listener.fatalError("failed to push gem: " + gemName));
+            return false;
         }
-        log.info("Kannan is testing: " + getGemLocation() + " >>>> " + DESCRIPTOR.getRubygemsCreds().getKey());
-        log.info("Build Root: " + build.getModuleRoot());
         return true;
     }
 
@@ -71,8 +65,8 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
         return DESCRIPTOR;
     }
 
-    public String getGemLocation() {
-        return gemLocation;
+    public String getGemName() {
+        return gemName;
     }
 
     public static final class GemDescriptor extends BuildStepDescriptor<Publisher> {
