@@ -33,12 +33,16 @@ import java.util.logging.Logger;
  */
 public final class GemPublisher extends Recorder implements Describable<Publisher> {
 
+    private static final Logger log = Logger
+            .getLogger(GemPublisher.class.getName());
+    public final String gemLocation;
+
     @Extension
-    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+    public static final GemDescriptor DESCRIPTOR = new GemDescriptor();
 
     @DataBoundConstructor
-    public GemPublisher() {
-        super();
+    public GemPublisher(String gemLocation) {
+        this.gemLocation = gemLocation;
     }
 
     @Override
@@ -47,6 +51,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            BuildListener listener)
             throws InterruptedException, IOException {
         //log(listener.getLogger(), "Testing Gem publisher");
+        log.info("Kannan is testing: " + getGemLocation());
         return true;
     }
 
@@ -54,14 +59,23 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
         return BuildStepMonitor.STEP;
     }
 
-    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+    @Override
+    public GemDescriptor getDescriptor(){
+        return DESCRIPTOR;
+    }
 
-        public DescriptorImpl(Class<? extends Publisher> clazz) {
+    public String getGemLocation() {
+        return gemLocation;
+    }
+
+    public static final class GemDescriptor extends BuildStepDescriptor<Publisher> {
+
+        public GemDescriptor(Class<? extends Publisher> clazz) {
             super(clazz);
             load();
         }
 
-        public DescriptorImpl() {
+        public GemDescriptor() {
             this(GemPublisher.class);
         }
 
@@ -77,16 +91,11 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
 
         @Override
         public GemPublisher newInstance(StaplerRequest req, net.sf.json.JSONObject formData) throws FormException {
-            GemPublisher pub = new GemPublisher();
-            //req.bindParameters(pub, "s3.");
-            //pub.getEntries().addAll(req.bindParametersToList(Entry.class, "s3.entry."));
-            //pub.getUserMetadata().addAll(req.bindParametersToList(MetadataPair.class, "s3.metadataPair."));
-            return pub;
+            return (GemPublisher) req.bindJSON(clazz, formData);
         }
 
         @Override
         public boolean configure(StaplerRequest req, net.sf.json.JSONObject json) throws FormException {
-            //profiles.replaceBy(req.bindParametersToList(S3Profile.class, "s3."));
             save();
             return true;
         }
