@@ -8,11 +8,19 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class RubygemsCreds {
     private final String key;
 
+    /**
+     *
+     * @param key
+     */
     @DataBoundConstructor
     public RubygemsCreds(String key) {
         this.key = key;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getKey() {
         return key;
     }

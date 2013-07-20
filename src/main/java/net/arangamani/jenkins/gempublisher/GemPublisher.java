@@ -29,11 +29,24 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
 
     public RubygemsApi api;
 
+    /**
+     *
+     * @param gemName
+     */
     @DataBoundConstructor
     public GemPublisher(String gemName) {
         this.gemName = gemName;
     }
 
+    /**
+     *
+     * @param build
+     * @param launcher
+     * @param listener
+     * @return
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @Override
     public boolean perform(AbstractBuild<?, ?> build,
                            Launcher launcher,
@@ -56,48 +69,92 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.STEP;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public GemDescriptor getDescriptor(){
         return DESCRIPTOR;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getGemName() {
         return gemName;
     }
 
+    /**
+     *
+     */
     public static final class GemDescriptor extends BuildStepDescriptor<Publisher> {
 
         @CopyOnWrite
         private volatile RubygemsCreds creds;
 
+        /**
+         *
+         * @param clazz
+         */
         public GemDescriptor(Class<? extends Publisher> clazz) {
             super(clazz);
             load();
         }
 
+        /**
+         *
+         */
         public GemDescriptor() {
             this(GemPublisher.class);
         }
 
+        /**
+         *
+         * @return
+         */
         @Override
         public String getDisplayName() {
             return "Publish gems to rubygems.org";
         }
 
+        /**
+         *
+         * @return
+         */
         @Override
         public String getHelpFile() {
             return "/plugin/gem/help.html";
         }
 
+        /**
+         *
+         * @param req
+         * @param formData
+         * @return
+         * @throws FormException
+         */
         @Override
         public GemPublisher newInstance(StaplerRequest req, net.sf.json.JSONObject formData) throws FormException {
             return (GemPublisher) req.bindJSON(clazz, formData);
         }
 
+        /**
+         *
+         * @param req
+         * @param json
+         * @return
+         * @throws FormException
+         */
         @Override
         public boolean configure(StaplerRequest req, net.sf.json.JSONObject json) throws FormException {
             creds = req.bindParameters(RubygemsCreds.class, "creds.");
@@ -105,6 +162,10 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
             return true;
         }
 
+        /**
+         *
+         * @return
+         */
         public RubygemsCreds getCreds() {
             return creds;
         }

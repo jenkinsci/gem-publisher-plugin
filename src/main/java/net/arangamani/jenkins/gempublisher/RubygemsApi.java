@@ -23,17 +23,33 @@ public class RubygemsApi {
 
     private final String USER_AGENT = "JenkinsGemPlugin/1.0";
 
+    /**
+     *
+     * @param creds
+     */
     @DataBoundConstructor
     public RubygemsApi(RubygemsCreds creds) {
         this.creds = creds;
     }
 
+    /**
+     *
+     * @param gemFile
+     * @throws Exception
+     */
     public void postGem(String gemFile) throws Exception {
         System.out.println("Posting gem... " + gemFile);
         byte[] fileContents = read(gemFile);
         sendPost("https://rubygems.org/api/v1/gems", creds.getKey(), fileContents);
     }
 
+    /**
+     *
+     * @param url
+     * @param key
+     * @param body
+     * @throws Exception
+     */
     private void sendPost(String url, String key, byte[] body) throws Exception {
 
         URL obj = new URL(url);
@@ -67,6 +83,12 @@ public class RubygemsApi {
 
     }
 
+    /**
+     *
+     * @param aInputFileName
+     * @return
+     * @throws Exception
+     */
     private byte[] read(String aInputFileName) throws Exception{
         File file = new File(aInputFileName);
         byte[] result = new byte[(int)file.length()];
