@@ -10,8 +10,8 @@
     When submitted, it will be passed to the corresponding constructor parameter.
   -->
 
-    <f:entry title="Gem Location" description="The location of .gem file. Example ./gem_name-0.0.0.gem">
-        <f:expandableTextbox name="gem.gemLocation" value="${instance.gemLocation}" />
+    <f:entry title="Gem Name" description="The location of .gem file. Example gem_name-0.0.0.gem">
+        <f:expandableTextbox name="gem.gemName" value="${instance.gemName}" />
     </f:entry>
 
 </j:jelly>
