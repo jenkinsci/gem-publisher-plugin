@@ -9,6 +9,7 @@ public class RubygemsCreds {
     private final String key;
 
     /**
+     * The constructor
      *
      * @param key The API key to authenticate with Rubygems
      */
@@ -18,8 +19,9 @@ public class RubygemsCreds {
     }
 
     /**
+     * Gets the rubygems.org API key
      *
-     * @return
+     * @return the rubygems.org API key
      */
     public String getKey() {
         return key;

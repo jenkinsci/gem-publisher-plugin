@@ -28,7 +28,8 @@ public class RubygemsApi {
 
     /**
      *
-     * @param creds
+     * @param creds the RubygemsCreds object that holds the
+     *              credentials to communicate with rubygems.org
      */
     @DataBoundConstructor
     public RubygemsApi(RubygemsCreds creds) {
@@ -37,31 +38,44 @@ public class RubygemsApi {
 
     /**
      *
-     * @param gemFile
+     * @param gemFile the absolute location of the gem file
+     *
+     * @return response from the POST request to post the gem
+     *
      * @throws Exception
      */
-    public void postGem(String gemFile) throws Exception {
+    public String postGem(String gemFile) throws Exception {
         String postURL = "https://rubygems.org/api/v1/gems";
+        String response;
         byte[] fileContents = read(gemFile);
         log.info("Posting gem file " + gemFile + " to " + postURL);
-        doPost(postURL, creds.getKey(), fileContents);
+        response = doPost(postURL, creds.getKey(),
+                "application/octet-stream", fileContents);
+        return response;
     }
 
     /**
+     * Makes a POST request to the specified URL with the specified
+     * parameters. This can send binary date of specified content type.
      *
-     * @param url
-     * @param key
-     * @param body
+     * @param url the URL to make the request
+     * @param key the API key to authenticate with rubygems.org
+     * @param contentType the content type of the request body
+     * @param body the body (binary date) of the request
+     *
+     * @return the String response from the POST request
+     *
      * @throws Exception
      */
-    private void doPost(String url, String key, byte[] body) throws Exception {
+    private String doPost(String url, String key, String contentType, byte[] body)
+            throws Exception {
 
         URL obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", USER_AGENT);
         con.setRequestProperty("Authorization", key);
-        con.setRequestProperty("Content-Type", "application/octet-stream");
+        con.setRequestProperty("Content-Type", contentType);
         con.setRequestProperty("Content-Length", Integer.toString(body.length));
 
         con.setDoOutput(true);
@@ -84,13 +98,15 @@ public class RubygemsApi {
 
         // Print Result
         log.info("Response from rubygems.org for POST: " + response.toString());
-
+        return response.toString();
     }
 
     /**
      *
-     * @param aInputFileName
-     * @return
+     * @param aInputFileName the input filename
+     *
+     * @return the bytes read from the given file
+     *
      * @throws Exception
      */
     private byte[] read(String aInputFileName) throws Exception{

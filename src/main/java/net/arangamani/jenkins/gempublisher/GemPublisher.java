@@ -56,10 +56,17 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
         try {
             StringBuilder builder = new StringBuilder();
             String gemPath;
+            String response;
             gemPath = builder.append(build.getModuleRoot()).append(File.separator)
                     .append(gemName).toString();
+            File gemFile = new File(gemPath);
+            if(!gemFile.exists()) {
+                listener.fatalError("Gem file not found: " + gemPath);
+                return false;
+            }
             log.info("Pushing gem " + gemName + " to rubygems.org");
-            api.postGem(gemPath);
+            response = api.postGem(gemPath);
+            listener.getLogger().println(response);
         }
         catch(Exception e){
             log.warning(e.getMessage());
