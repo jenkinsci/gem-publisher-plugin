@@ -1,0 +1,21 @@
+# generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.iml
+
+# java specific
+*.class
+.classpath
+.project
+.settings
+target
+work
+
+# Idea
+.idea
+
+# Doc
+doc
