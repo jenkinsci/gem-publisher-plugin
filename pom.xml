@@ -10,6 +10,20 @@
   <artifactId>gem-publisher</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
+  <name>Gem Publisher Plugin</name>
+
+  <developers>
+    <developer>
+      <id>arangamani</id>
+      <name>Kannan Manickam</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/gem-publisher-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/gem-publisher-plugin.git</developerConnection>
+    <url>https://github.com/jenkinsci/gem-publisher-plugin</url>
+  </scm>
 
   <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
   <repositories>
