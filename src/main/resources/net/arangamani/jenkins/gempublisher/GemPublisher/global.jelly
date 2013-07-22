@@ -12,7 +12,7 @@
     so it should be straightforward to find them.
   -->
     <f:section title="Gem Publisher">
-        <f:entry title="Rubygems API Key">
+        <f:entry title="Rubygems API Key" help="/plugin/gem-publisher/help-rubygemsApiKey.html">
             <f:password name="creds.key" value="${instance.creds.key}"/>
         </f:entry>
     </f:section>

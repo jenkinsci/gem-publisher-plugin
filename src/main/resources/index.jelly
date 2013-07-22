@@ -2,5 +2,5 @@
   This view is used to render the installed plugins page.
 -->
 <div>
-  This plugin publishes rubygems to rubygems.org using their API.
+  This plugin publishes rubygems to <ahref="http://rubygems.org">rubygems.org</a> using their API.
 </div>
