@@ -53,24 +53,30 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
                            BuildListener listener)
             throws InterruptedException, IOException {
         api = new RubygemsApi(DESCRIPTOR.getCreds());
+
         try {
             StringBuilder builder = new StringBuilder();
             String gemPath;
             String response;
-            gemPath = builder.append(build.getModuleRoot()).append(File.separator)
-                    .append(gemName).toString();
-            File gemFile = new File(gemPath);
-            if(!gemFile.exists()) {
-                listener.fatalError("Gem file not found: " + gemPath);
-                return false;
+            String chosenFile;
+
+            // Choose the gem file to use
+            chosenFile = GemFileChooser.chooseFile(gemName, build.getModuleRoot());
+            if(chosenFile == null) {
+                log.warning("No gem file matching name: " + gemName +
+                " Skipping gem publishing.");
             }
-            log.info("Pushing gem " + gemName + " to rubygems.org");
-            response = api.postGem(gemPath);
-            listener.getLogger().println(response);
+            else {
+                gemPath = builder.append(build.getModuleRoot()).append(File.separator)
+                        .append(chosenFile).toString();
+                log.info("Pushing gem " + gemName + " to rubygems.org");
+                response = api.postGem(gemPath);
+                listener.getLogger().println(response);
+            }
         }
         catch(Exception e){
             log.warning(e.getMessage());
-            e.printStackTrace(listener.fatalError("failed to push gem: " + gemName));
+            e.printStackTrace(listener.fatalError("Failed to push gem: " + gemName));
             return false;
         }
         return true;
