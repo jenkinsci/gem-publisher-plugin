@@ -63,7 +63,7 @@ public final class GemPublisher extends Recorder implements Describable<Publishe
             // Choose the gem file to use
             chosenFile = GemFileChooser.chooseFile(gemName, build.getModuleRoot());
             if(chosenFile == null) {
-                log.warning("No gem file matching name: " + gemName +
+                log.warning("No gem file matching name: " + gemName + "." +
                 " Skipping gem publishing.");
             }
             else {
