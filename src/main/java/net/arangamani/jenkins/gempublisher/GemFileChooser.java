@@ -34,7 +34,8 @@ public class GemFileChooser {
                 }
             }
             log.info("Chosen gem file to publish: " + chosenFile.getName());
-            return chosenFile.getName();
+            if(chosenFile != null)
+                return chosenFile.getName();
         }
         catch(Exception e) {
             log.severe("Error in choosing file: " + e.getMessage());
